@@ -91,6 +91,7 @@ const char *VolumeManager::LOOPDIR           = "/mnt/obb";
 static const char* kUserMountPath = "/mnt/user";
 
 static const unsigned int kMajorBlockMmc = 179;
+static const unsigned int kMajorBlockPcie = 259;
 static const unsigned int kMajorBlockExperimentalMin = 240;
 static const unsigned int kMajorBlockExperimentalMax = 254;
 
@@ -307,7 +308,9 @@ void VolumeManager::handleBlockEvent(NetlinkEvent *evt) {
                     && major >= (int) kMajorBlockExperimentalMin
                     && major <= (int) kMajorBlockExperimentalMax)) {
                     flags |= android::vold::Disk::Flags::kSd;
-                } else {
+                } else if(major == kMajorBlockPcie || source->getNickname() == "nvme"){
+                    flags |= android::vold::Disk::Flags::kNvme;
+                }else {
                     flags |= android::vold::Disk::Flags::kUsb;
                 }
 
